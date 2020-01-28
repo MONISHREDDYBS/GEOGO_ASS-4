@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+        <link rel="stylesheet" href="style.css"/>
+		<script
+			defer
+			src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+			integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+			crossorigin="anonymous"
+        ></script>
+        <script type="text/javascript" src="react.development.js"></script>
+        <script type="text/javascript" src="react-dom.development.js"></script>
+        <script type="text/javascript" src="babel.min.js"></script>
+		<title>Expense App</title>
+    </head>
+	<body> 
+        <div id="container"></div>
+        <script type="text/babel">
+        var dest = document.getElementById("container");
+        class ExpenseApp extends React.Component{
+            constructor(props){
+                super(props);
+                this.state= {
+                    expenses:[],
+                    input:"",
+                };
+                this.addItem = this.addItem.bind(this);
+                this.deleteItem = this.deleteItem.bind(this);
+                this.createItem = this.createItem.bind(this);
+                this.select_task=this.select_task.bind(this);
+            }
+            select_task(){
+                if(this.state.expenses.length!==0){
+                var l=this.state.expenses[Math.floor(Math.random()*this.state.expenses.length)].item;
+                var k=this.state.expenses[Math.floor(Math.random()*this.state.expenses.length)].key;
+                for(var i=0;i < this.state.expenses.length;i++){
+                    if(this.state.expenses[i].key==k){
+                        this.setState({
+                        input:this.state.expenses[i].item
+                    });
+                }
+                   }
+            }
+        }
+            createItem(item1)
+            {
+                return(
+                        <li className="list-group-item d-flex justify-content-between" key={item1.key} style={{backgroundColor:this.state.color}}>
+							<div className="d-flex flex-column">
+								{item1.item}
+							</div>
+							<div>
+								<button type="button" className="btn btn-outline-danger btn-sm" key={item1.key}  onClick={() => this.deleteItem(item1.key)} >
+									<i className="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</li>
+
+                );
+            }
+            deleteItem(key)
+            {
+                console.log("entered");
+                var filteredItems = this.state.expenses.filter(function(item1){
+                        return (item1.key !== key)
+                    });
+                    this.setState({
+                        expenses:filteredItems
+                    });
+
+            }
+            addItem(e){
+                var key;
+                var newItem = {
+                    item:this._inputElement2.value,
+                    key:Date.now()
+                };
+                this.setState({
+                    expenses:[...this.state.expenses,newItem]
+                })
+                e.preventDefault();
+                this._inputElement2.value="";
+                console.log(this.state.expenses);
+            }
+            render()
+            {
+                var expenses1=this.state.expenses.map(this.createItem);
+                return(
+                    <div>
+                        <nav className="navbar navbar-dark bg-dark">
+			<span className="navbar-brand mb-0 h1">Xpers</span>
+		</nav>
+        <center><button id="select_task" onClick={this.select_task}>let me select a Task</button></center>
+		<div className="container-fluid bg-light" >
+			<div className="container">
+				<div className="jumbotron mt-4">
+                <form onSubmit={this.addItem}>
+					<div className="input-group mb-3">
+						<div className="input-group-prepend">
+							<span className="input-group-text" id="spent at">@</span>
+						</div>
+						<input
+							type="text"
+							className="form-control"
+							placeholder="task_name"
+							aria-label="spent On"
+							aria-describedby="spent at"
+                            ref={(b) => this._inputElement2 = b}
+						/>
+						<div className="input-group-append">
+							<button className="btn btn-outline-primary" type="submit" id="button-addon2">Add</button>
+						</div>
+                        
+					</div>
+                    <center><h3>Task:{this.state.input}</h3></center>
+                    </form>
+				</div>
+                <div>
+					<ul className="list-group">
+						{expenses1}
+					</ul>
+				</div>
+			</div>
+		</div>
+                    </div>
+                );
+            }
+        }
+        
+        ReactDOM.render(<div><ExpenseApp/></div>,dest);
+        </script>
+	</body>
+</html>
